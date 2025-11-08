@@ -1,0 +1,282 @@
+/* Global Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f7fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* App Container */
+.App {
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.App-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.App-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.App-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.App-main {
+  padding: 2rem;
+}
+
+/* Error Message */
+.error-message {
+  background-color: #fee;
+  color: #c53030;
+  border: 1px solid #fc8181;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Student Form */
+.student-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+  border: 1px solid #e2e8f0;
+}
+
+.student-form h2 {
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background-color: #fff;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input:disabled {
+  background-color: #f7fafc;
+  color: #718096;
+  cursor: not-allowed;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Buttons */
+button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 100px;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Primary Button */
+button[type="submit"] {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Secondary Button */
+button[type="button"] {
+  background-color: #e2e8f0;
+  color: #4a5568;
+}
+
+button[type="button"]:hover:not(:disabled) {
+  background-color: #cbd5e0;
+}
+
+/* Students List */
+.students-list {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.students-list h2 {
+  background-color: #f8fafc;
+  padding: 1.5rem 2rem;
+  margin: 0;
+  color: #2d3748;
+  font-size: 1.25rem;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.loading {
+  padding: 3rem;
+  text-align: center;
+  color: #718096;
+  font-size: 1.1rem;
+}
+
+.no-students {
+  padding: 3rem 2rem;
+  text-align: center;
+  color: #718096;
+  font-size: 1.1rem;
+}
+
+/* Table */
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background-color: #f8fafc;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #4a5568;
+  border-bottom: 2px solid #e2e8f0;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+td {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Action Buttons */
+.edit-btn {
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+  min-width: auto;
+}
+
+.edit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
+}
+
+.delete-btn {
+  background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  min-width: auto;
+}
+
+.delete-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(245, 101, 101, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .App-main {
+    padding: 1rem;
+  }
+  
+  .student-form {
+    padding: 1.5rem;
+  }
+  
+  .form-buttons {
+    flex-direction: column;
+  }
+  
+  .table-container {
+    font-size: 0.9rem;
+  }
+  
+  th,
+  td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .App-header h1 {
+    font-size: 2rem;
+  }
+}
