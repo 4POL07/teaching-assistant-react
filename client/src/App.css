@@ -351,9 +351,42 @@ tbody tr:last-child td {
 .grade-cell {
   min-width: 80px;
   font-weight: 500;
+  padding: 0.5rem;
+}
+
+.grade-select {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.25rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease-in-out;
+}
+
+.grade-select:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+.grade-select:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.grade-select.updating {
+  background-color: #f3f4f6;
 }
 
 .grade-MANA {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.grade-MANA .grade-select,
+.grade-select.grade-MANA {
   background-color: #fef3c7;
   color: #92400e;
 }
@@ -363,7 +396,19 @@ tbody tr:last-child td {
   color: #1e40af;
 }
 
+.grade-MPA .grade-select,
+.grade-select.grade-MPA {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
 .grade-MA {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.grade-MA .grade-select,
+.grade-select.grade-MA {
   background-color: #dcfce7;
   color: #166534;
 }
@@ -371,4 +416,9 @@ tbody tr:last-child td {
 .no-grade {
   color: #9ca3af;
   font-style: italic;
+}
+
+.grade-select.no-grade {
+  color: #9ca3af;
+  background-color: #f9fafb;
 }

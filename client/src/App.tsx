@@ -38,13 +38,17 @@ const App: React.FC = () => {
     loadStudents(); // Reload the list when a new student is added
   };
 
+  const handleStudentDeleted = () => {
+    loadStudents(); // Reload the list when a student is deleted
+  };
+
   const handleStudentUpdated = () => {
     setEditingStudent(null);
     loadStudents(); // Reload the list when a student is updated
   };
 
-  const handleStudentDeleted = () => {
-    loadStudents(); // Reload the list when a student is deleted
+  const handleEvaluationUpdated = () => {
+    loadStudents(); // Reload the list when evaluations are updated
   };
 
   const handleEditClick = (student: Student) => {
@@ -112,7 +116,11 @@ const App: React.FC = () => {
           )}
 
           {activeTab === 'evaluations' && (
-            <Evaluations students={students} />
+            <Evaluations 
+              students={students} 
+              onStudentUpdated={handleEvaluationUpdated}
+              onError={handleError}
+            />
           )}
         </div>
       </main>
