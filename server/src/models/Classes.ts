@@ -32,17 +32,6 @@ export class Classes {
     return true;
   }
 
-  // Merge evaluations and self-evaluations from one enrollment to another
-  private mergeEnrollmentsData(from: Enrollment, to: Enrollment): void {
-    from.getEvaluations().forEach(evaluation => 
-      to.addOrUpdateEvaluation(evaluation.getGoal(), evaluation.getGrade())
-    );
-    
-    from.getSelfEvaluations().forEach(selfEvaluation => 
-      to.addOrUpdateSelfEvaluation(selfEvaluation.getGoal(), selfEvaluation.getGrade())
-    );
-  }
-
   // Update class
   updateClass(updatedClass: Class): Class {
     const existingClass = this.findClassById(updatedClass.getClassId());
@@ -67,7 +56,8 @@ export class Classes {
       
       if (existingEnrollment) {
         // Update existing enrollment's evaluations and self-evaluations
-        this.mergeEnrollmentsData(updatedEnrollment, existingEnrollment);
+        existingEnrollment.mergeEvaluationsFrom(updatedEnrollment);
+        existingEnrollment.mergeSelfEvaluationsFrom(updatedEnrollment);
       } else {
         // Add new enrollment that doesn't exist yet
         try {
@@ -75,7 +65,8 @@ export class Classes {
           const newEnrollment = existingClass.findEnrollmentByStudentCPF(studentCPF);
           if (newEnrollment) {
             // Copy over evaluations and self-evaluations from updated enrollment
-            this.mergeEnrollmentsData(updatedEnrollment, newEnrollment);
+            newEnrollment.mergeEvaluationsFrom(updatedEnrollment);
+            newEnrollment.mergeSelfEvaluationsFrom(updatedEnrollment);
           }
         } catch (error) {
           // Enrollment already exists, this shouldn't happen but handle gracefully
