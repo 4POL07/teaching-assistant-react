@@ -78,6 +78,20 @@ class EnrollmentService {
       throw error;
     }
   }
+
+  static async getDiscrepancys(classId: string): Promise<any[]> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/classes/${classId}/discrepancys`);  
+      if (!response.ok) {
+        throw new Error('Failed to fetch discrepancies');
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching discrepancies:', error);
+      throw error;
+    }
+  }
 }
 
 export default EnrollmentService;
