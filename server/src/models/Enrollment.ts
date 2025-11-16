@@ -121,6 +121,20 @@ export class Enrollment {
     return this.findIn(this.selfEvaluations, goal);
   }
 
+  // Merge evaluations from another enrollment
+  mergeEvaluationsFrom(other: Enrollment): void {
+    other.getEvaluations().forEach(evaluation => {
+      this.addOrUpdateEvaluation(evaluation.getGoal(), evaluation.getGrade());
+    });
+  }
+
+  // Merge self-evaluations from another enrollment
+  mergeSelfEvaluationsFrom(other: Enrollment): void {
+    other.getSelfEvaluations().forEach(selfEvaluation => {
+      this.addOrUpdateSelfEvaluation(selfEvaluation.getGoal(), selfEvaluation.getGrade());
+    });
+  }
+
   // Convert to JSON for API responses
   toJSON() {
     return {
