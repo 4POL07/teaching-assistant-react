@@ -4,6 +4,7 @@ import ClassService from '../services/ClassService';
 import EnrollmentService from '../services/EnrollmentService';
 
 import { ImportGradeComponent } from './ImportGrade';
+import InfoButton from './InfoButton';
 
 interface EvaluationsProps {
   onError: (errorMessage: string) => void;
@@ -40,6 +41,17 @@ const Evaluations: React.FC<EvaluationsProps> = ({ onError }) => {
     }
   }, [onError]);
 
+  const [discrepancies, setDiscrepancies] = useState<any[]>([]);
+
+  const loadDiscrepancies = useCallback(async (classId: string) => {
+    try {
+      const data = await EnrollmentService.getDiscrepancys(classId);
+      setDiscrepancies(data);
+    } catch (error) {
+      onError(`Failed to load discrepancies: ${(error as Error).message}`);
+    }
+  }, [onError]);
+
   // Load all classes on component mount
   useEffect(() => {
     loadClasses();
@@ -50,10 +62,11 @@ const Evaluations: React.FC<EvaluationsProps> = ({ onError }) => {
     if (selectedClassId) {
       const classObj = classes.find(c => c.id === selectedClassId);
       setSelectedClass(classObj || null);
+      loadDiscrepancies(selectedClassId); // CARREGAR DISCREPÂNCIAS QUANDO A TURMA É SELECIONADA
     } else {
       setSelectedClass(null);
     }
-  }, [selectedClassId, classes]);
+  }, [selectedClassId, classes, loadDiscrepancies]);
 
   const handleClassSelection = (classId: string) => {
     setSelectedClassId(classId);
@@ -75,6 +88,7 @@ const Evaluations: React.FC<EvaluationsProps> = ({ onError }) => {
       await EnrollmentService.updateEvaluation(selectedClass.id, studentCPF, goal, grade);
       // Reload classes to get updated enrollment data
       await loadClasses();
+      await loadDiscrepancies(selectedClass.id); // RECARREGAR DISCREPÂNCIAS QUANDO UMA NOTA É ALTERADA
     } catch (error) {
       onError(`Failed to update evaluation: ${(error as Error).message}`);
     }
@@ -173,7 +187,14 @@ const Evaluations: React.FC<EvaluationsProps> = ({ onError }) => {
                   return (
                     <tr key={student.cpf} className="student-row">
                       <td className="student-name-cell">{student.name}
-                      {}  
+                        { }
+                        {(() => {
+                          const disc = discrepancies.find(d => d.studentCPF === student.cpf);
+                          if (disc) {
+                            <InfoButton text={`Discrepância total da turma: ${disc.DiscrepancyCount.toFixed(2)}`} />
+                          }
+                          return null;
+                        })()}
                       </td>
                       {evaluationGoals.map(goal => {
                         const currentGrade = studentEvaluations[goal] || '';

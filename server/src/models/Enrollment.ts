@@ -141,4 +141,15 @@ export class Enrollment {
     return new Enrollment(student, evaluations, selfEvaluations);
   }
 
+  discrepancy(): number {
+    let discrepancyCount = 0;   
+    this.evaluations.forEach(evaluation => {
+      const selfEvaluation = this.getSelfEvaluationForGoal(evaluation.getGoal());
+      if (selfEvaluation && (selfEvaluation.getGrade() !== evaluation.getGrade()) && (evaluation.getGrade() !== 'MA') && (selfEvaluation.getGrade() !== 'MANA')) {
+          discrepancyCount++;
+      }
+    });
+    return discrepancyCount/this.evaluations.length;
+  } 
+
 }
