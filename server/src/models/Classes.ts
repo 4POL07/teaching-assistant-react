@@ -1,4 +1,5 @@
 import { Class } from './Class';
+import { Enrollment } from './Enrollment';
 import { Student } from './Student';
 
 export class Classes {
@@ -31,6 +32,17 @@ export class Classes {
     return true;
   }
 
+  // Merge evaluations and self-evaluations from one enrollment to another
+  private mergeEnrollmentsData(from: Enrollment, to: Enrollment): void {
+    from.getEvaluations().forEach(evaluation => 
+      to.addOrUpdateEvaluation(evaluation.getGoal(), evaluation.getGrade())
+    );
+    
+    from.getSelfEvaluations().forEach(selfEvaluation => 
+      to.addOrUpdateSelfEvaluation(selfEvaluation.getGoal(), selfEvaluation.getGrade())
+    );
+  }
+
   // Update class
   updateClass(updatedClass: Class): Class {
     const existingClass = this.findClassById(updatedClass.getClassId());
@@ -54,22 +66,16 @@ export class Classes {
       const existingEnrollment = existingClass.findEnrollmentByStudentCPF(studentCPF);
       
       if (existingEnrollment) {
-        // Update existing enrollment's evaluations
-        const updatedEvaluations = updatedEnrollment.getEvaluations();
-        updatedEvaluations.forEach(evaluation => {
-          existingEnrollment.addOrUpdateEvaluation(evaluation.getGoal(), evaluation.getGrade());
-        });
+        // Update existing enrollment's evaluations and self-evaluations
+        this.mergeEnrollmentsData(updatedEnrollment, existingEnrollment);
       } else {
         // Add new enrollment that doesn't exist yet
         try {
           existingClass.addEnrollment(updatedEnrollment.getStudent());
           const newEnrollment = existingClass.findEnrollmentByStudentCPF(studentCPF);
           if (newEnrollment) {
-            // Copy over evaluations from updated enrollment
-            const updatedEvaluations = updatedEnrollment.getEvaluations();
-            updatedEvaluations.forEach(evaluation => {
-              newEnrollment.addOrUpdateEvaluation(evaluation.getGoal(), evaluation.getGrade());
-            });
+            // Copy over evaluations and self-evaluations from updated enrollment
+            this.mergeEnrollmentsData(updatedEnrollment, newEnrollment);
           }
         } catch (error) {
           // Enrollment already exists, this shouldn't happen but handle gracefully

@@ -452,3 +452,22 @@ app.post('/api/classes/gradeImport/:classId', upload_dir.single('file'), async (
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+// get discrepancy count between evaluations and self-evaluations
+app.get('/api/classes/:classId/discrepancys', (req: Request, res: Response) => {
+  try {
+    const { classId } = req.params; 
+    const classObj = classes.findClassById(classId);
+    if (!classObj) {
+      return res.status(404).json({ error: 'Class not found' });
+    }
+    const discrepancies = classObj.getEnrollments().map(enrollment => ({
+      studentCPF: enrollment.getStudent().getCPF(),
+      studentName: enrollment.getStudent().name,
+      discrepancyCount: enrollment.discrepancy()
+    })).filter(item => item.discrepancyCount > 0);
+    res.json(discrepancies);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch discrepancies' });
+  }
+});

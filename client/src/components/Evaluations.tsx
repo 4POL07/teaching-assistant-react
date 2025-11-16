@@ -4,6 +4,7 @@ import ClassService from '../services/ClassService';
 import EnrollmentService from '../services/EnrollmentService';
 
 import { ImportGradeComponent } from './ImportGrade';
+import InfoButton from './InfoButton';
 
 interface EvaluationsProps {
   onError: (errorMessage: string) => void;
@@ -21,7 +22,7 @@ const Evaluations: React.FC<EvaluationsProps> = ({ onError }) => {
   // Predefined evaluation goals
   const evaluationGoals = [
     'Requirements',
-    'Configuration Management', 
+    'Configuration Management',
     'Project Management',
     'Design',
     'Tests',
@@ -40,6 +41,17 @@ const Evaluations: React.FC<EvaluationsProps> = ({ onError }) => {
     }
   }, [onError]);
 
+  const [discrepancies, setDiscrepancies] = useState<any[]>([]);
+
+  const loadDiscrepancies = useCallback(async (classId: string) => {
+    try {
+      const data = await EnrollmentService.getDiscrepancys(classId);
+      setDiscrepancies(data);
+    } catch (error) {
+      onError(`Failed to load discrepancies: ${(error as Error).message}`);
+    }
+  }, [onError]);
+
   // Load all classes on component mount
   useEffect(() => {
     loadClasses();
@@ -50,10 +62,11 @@ const Evaluations: React.FC<EvaluationsProps> = ({ onError }) => {
     if (selectedClassId) {
       const classObj = classes.find(c => c.id === selectedClassId);
       setSelectedClass(classObj || null);
+      loadDiscrepancies(selectedClassId); // CARREGAR DISCREPÂNCIAS QUANDO A TURMA É SELECIONADA
     } else {
       setSelectedClass(null);
     }
-  }, [selectedClassId, classes]);
+  }, [selectedClassId, classes, loadDiscrepancies]);
 
   const handleClassSelection = (classId: string) => {
     setSelectedClassId(classId);
@@ -75,6 +88,7 @@ const Evaluations: React.FC<EvaluationsProps> = ({ onError }) => {
       await EnrollmentService.updateEvaluation(selectedClass.id, studentCPF, goal, grade);
       // Reload classes to get updated enrollment data
       await loadClasses();
+      await loadDiscrepancies(selectedClass.id); // RECARREGAR DISCREPÂNCIAS QUANDO UMA NOTA É ALTERADA
     } catch (error) {
       onError(`Failed to update evaluation: ${(error as Error).message}`);
     }
@@ -94,7 +108,7 @@ const Evaluations: React.FC<EvaluationsProps> = ({ onError }) => {
   return (
     <div className="evaluation-section">
       <h3>Evaluations</h3>
-      
+
       {/* Class Selection */}
       <div className="class-selection-container">
         <label htmlFor="classSelect">Select Class:</label>
@@ -114,10 +128,10 @@ const Evaluations: React.FC<EvaluationsProps> = ({ onError }) => {
       </div>
 
       {!selectedClass && (
-        <div style={{ 
-          padding: '20px', 
-          border: '2px dashed #ccc', 
-          borderRadius: '8px', 
+        <div style={{
+          padding: '20px',
+          border: '2px dashed #ccc',
+          borderRadius: '8px',
           textAlign: 'center',
           color: '#666',
           marginTop: '20px'
@@ -128,10 +142,10 @@ const Evaluations: React.FC<EvaluationsProps> = ({ onError }) => {
       )}
 
       {selectedClass && selectedClass.enrollments.length === 0 && (
-        <div style={{ 
-          padding: '20px', 
-          border: '2px dashed #ccc', 
-          borderRadius: '8px', 
+        <div style={{
+          padding: '20px',
+          border: '2px dashed #ccc',
+          borderRadius: '8px',
           textAlign: 'center',
           color: '#666',
           marginTop: '20px'
@@ -149,7 +163,7 @@ const Evaluations: React.FC<EvaluationsProps> = ({ onError }) => {
             <ImportGradeComponent classID={selectedClassId} />
           </div>
           <h4>{selectedClass.topic} ({selectedClass.year}/{selectedClass.semester})</h4>
-          
+
           <div className="evaluation-matrix">
             <table className="evaluation-table">
               <thead>
@@ -163,19 +177,28 @@ const Evaluations: React.FC<EvaluationsProps> = ({ onError }) => {
               <tbody>
                 {selectedClass.enrollments.map(enrollment => {
                   const student = enrollment.student;
-                  
+
                   // Create a map of evaluations for quick lookup
                   const studentEvaluations = enrollment.evaluations.reduce((acc, evaluation) => {
                     acc[evaluation.goal] = evaluation.grade;
                     return acc;
-                  }, {} as {[goal: string]: string});
+                  }, {} as { [goal: string]: string });
 
                   return (
                     <tr key={student.cpf} className="student-row">
-                      <td className="student-name-cell">{student.name}</td>
+                      <td className="student-name-cell">{student.name}
+                        { }
+                        {(() => {
+                          const disc = discrepancies.find(d => d.studentCPF === student.cpf);
+                          if (disc) {
+                            <InfoButton text={`Discrepância: ${disc.DiscrepancyCount.toFixed(2)}`} />
+                          }
+                          return null;
+                        })()}
+                      </td>
                       {evaluationGoals.map(goal => {
                         const currentGrade = studentEvaluations[goal] || '';
-                        
+
                         return (
                           <td key={goal} className="evaluation-cell">
                             <select
