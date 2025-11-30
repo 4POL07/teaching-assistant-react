@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Class } from '../types/Class';
 import ClassService from '../services/ClassService';
 import EnrollmentService from '../services/EnrollmentService';
-
+import InfoButton from './InfoButton';
 import { ImportGradeComponent } from './ImportGrade';
 
 interface EvaluationsProps {
@@ -323,6 +323,11 @@ const Evaluations: React.FC<EvaluationsProps> = ({ onError }) => {
                     const student = enrollment.student;
 
                     // Create a map of self-evaluations for quick lookup
+                    const studentEvaluations = enrollment.evaluations.reduce((acc, evaluation) => {
+                      acc[evaluation.goal] = evaluation.grade;
+                      return acc;
+                    }, {} as { [goal: string]: string });
+
                     const studentSelfEvaluations = enrollment.selfEvaluations.reduce((acc, evaluation) => {
                       acc[evaluation.goal] = evaluation.grade;
                       return acc;
@@ -333,7 +338,8 @@ const Evaluations: React.FC<EvaluationsProps> = ({ onError }) => {
                         <td className="student-name-cell">{student.name}</td>
                         {evaluationGoals.map(goal => {
                           const currentGrade = studentSelfEvaluations[goal] || '';
-
+                          const evaluationGrade = studentEvaluations[goal] || '';
+                          const hasDiscrepancy = compareGoal(evaluationGrade, currentGrade);
                           const getGradeStyle = (grade: string) => {
                             switch (grade) {
                               case 'MA':
@@ -367,6 +373,10 @@ const Evaluations: React.FC<EvaluationsProps> = ({ onError }) => {
 
                           return (
                             <td key={goal} className="evaluation-cell">
+                              {hasDiscrepancy && (
+                                  <InfoButton text={"Avaliação do professor foi " + evaluationGrade} />
+                                )
+                              }
                               <span style={{
                                 display: 'inline-block',
                                 padding: '4px 8px',
