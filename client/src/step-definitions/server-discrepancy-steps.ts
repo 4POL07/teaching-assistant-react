@@ -60,7 +60,7 @@ Given("student {word} data is prepared in the system", function (studentName: st
 
 // Mantido exatamente igual
 Given(
-    "the calculated discrepancy status for goals {string} and {string} is TRUE (discrepant)",
+    "the calculated discrepancy status for goals '{string}' and '{string}' is TRUE (discrepant)",
     function (g1: string, g2: string) {
         studentEval[g1] = "MA"; studentSelf[g1] = "MANA";
         studentEval[g2] = "MA"; studentSelf[g2] = "MPA";
@@ -76,7 +76,7 @@ Given("the calculated discrepancy status for the remaining goals is FALSE (not d
     }
 });
 
-When("the function getStudentDiscrepancyInfo is called for student {word}}", function (studentName: string) {
+When("the function getStudentDiscrepancyInfo is called for student {word}", function (studentName: string) {
     result = getStudentDiscrepancyInfo(goals, studentEval, studentSelf);
 });
 
@@ -90,7 +90,7 @@ Then("the function should return the overall discrepancy flag as TRUE", function
 
 
 Given(
-    "the calculated discrepancy status for goal {string} is TRUE (discrepant)",
+    "the calculated discrepancy status for goal '{string}' is TRUE (discrepant)",
     function (g1: string) {
         studentEval[g1] = "MA";
         studentSelf[g1] = "MANA";
@@ -105,13 +105,20 @@ Then("the function should return the overall discrepancy flag as FALSE", functio
     expect(result.highlight).toBe(false);
 });
 
+Given("the student has no goals marked as discrepant", function () {
+    for (const goal of goals) {
+        studentEval[goal] = "MA";
+        studentSelf[goal] = "MA";
+    }
+});
+
 Then("the function should return the total discrepancy percentage as 0%", function () {
     expect(result.percentage).toBe(0);
 });
 
 Given(
-    'the goal "{string}" has teacher evaluation "{string}" and self-evaluation "{string}"',
-    function (goal, teacher, self) {
+    "the goal '{string}' has teacher evaluation '{string}' and self-evaluation '{string}'",
+    function (goal: string, teacher: string, self: string) {
         studentEval = { [goal]: teacher };
         studentSelf = { [goal]: self };
     }
